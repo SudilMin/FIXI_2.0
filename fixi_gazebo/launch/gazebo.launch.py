@@ -16,7 +16,8 @@ def generate_launch_description():
     urdf_file = os.path.join(pkg_fixi_description, 'urdf', 'fixi.urdf.xacro')
     bottle_model_dir = os.path.join(pkg_fixi_gazebo, 'models', 'plastic_bottle')
 
-    # Environment variables for Gazebo to find models
+    # Environment variables for Gazebo to find models and define version
+    os.environ['GZ_VERSION'] = 'harmonic'
     os.environ['GZ_SIM_RESOURCE_PATH'] = f"{os.environ.get('GZ_SIM_RESOURCE_PATH', '')}:{os.path.join(pkg_fixi_gazebo, 'models')}"
 
     # Gazebo sim
@@ -75,11 +76,11 @@ def generate_launch_description():
         arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
     )
 
-    diff_drive_controller = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=['diff_drive_controller', '--controller-manager', '/controller_manager'],
-    )
+    # diff_drive_controller = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     arguments=['diff_drive_controller', '--controller-manager', '/controller_manager'],
+    # )
 
     # ROS-GZ Bridge
     bridge = Node(
@@ -88,6 +89,8 @@ def generate_launch_description():
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
+            '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
+            '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
         ],
         output='screen'
     )
@@ -105,7 +108,7 @@ def generate_launch_description():
     ld.add_action(robot_state_publisher)
     ld.add_action(spawn_robot)
     ld.add_action(joint_state_broadcaster)
-    ld.add_action(diff_drive_controller)
+    # ld.add_action(diff_drive_controller)
     ld.add_action(bridge)
     # Remap is handled via ros2 run topic_tools relay, but topic_tools is not always installed.
     # Instead we will just launch relay if available or tell user to publish to /diff_drive_controller/cmd_vel_unstamped
