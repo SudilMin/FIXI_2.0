@@ -23,9 +23,9 @@ class VisualServoNode(Node):
         self.image_center_x = self.image_width / 2.0
         
         # Servoing parameters
-        self.kp_yaw = 0.003       # Proportional gain for turning
-        self.center_tolerance = 40.0 # Pixels off center allowed before turning in place
-        self.forward_speed = 0.8  # m/s
+        self.kp_yaw = 0.001       # Reduced proportional gain to stop oscillating
+        self.center_tolerance = 60.0 # Increased tolerance
+        self.forward_speed = 0.4  # Slower speed for stability
         self.stop_area = 100000.0  # Stop moving forward if the bottle bounding box area is larger than this
 
         self.get_logger().info('Visual Servo Node Started. Waiting for detections...')
@@ -50,8 +50,8 @@ class VisualServoNode(Node):
             # Positive error means bottle is on the left -> turn left (positive angular z)
             twist.angular.z = self.kp_yaw * error_x
             
-            # Cap max turning speed
-            twist.angular.z = max(min(twist.angular.z, 1.0), -1.0)
+            # Cap max turning speed heavily to prevent overshoot
+            twist.angular.z = max(min(twist.angular.z, 0.4), -0.4)
             self.get_logger().info(f'Centering... Error: {error_x:.1f}, CmdZ: {twist.angular.z:.2f}')
             
         else:

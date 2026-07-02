@@ -82,6 +82,18 @@ def generate_launch_description():
     #     arguments=['diff_drive_controller', '--controller-manager', '/controller_manager'],
     # )
 
+    arm_controller = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['arm_controller', '--controller-manager', '/controller_manager'],
+    )
+    
+    gripper_controller = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['gripper_controller', '--controller-manager', '/controller_manager'],
+    )
+
     # ROS-GZ Bridge
     bridge = Node(
         package='ros_gz_bridge',
@@ -108,6 +120,8 @@ def generate_launch_description():
     ld.add_action(robot_state_publisher)
     ld.add_action(spawn_robot)
     ld.add_action(joint_state_broadcaster)
+    ld.add_action(arm_controller)
+    ld.add_action(gripper_controller)
     # ld.add_action(diff_drive_controller)
     ld.add_action(bridge)
     # Remap is handled via ros2 run topic_tools relay, but topic_tools is not always installed.

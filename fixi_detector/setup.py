@@ -25,6 +25,7 @@ setup(
         'console_scripts': [
             'detector_node = fixi_detector.detector_node:main',
             'visual_servo_node = fixi_detector.visual_servo_node:main',
+            'auto_picker = fixi_detector.pick_and_place:main',
         ],
     },
 )
