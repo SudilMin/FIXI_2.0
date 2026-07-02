@@ -494,4 +494,7 @@
     <child link="gripper_tcp"/>
     <origin xyz="0.14 0 0" rpy="0 0 0"/>
   </joint>
+
+  <!-- Include Gazebo simulation settings -->
+  <xacro:include filename="$(find fixi_description)/urdf/fixi.gazebo.xacro"/>
 </robot>
